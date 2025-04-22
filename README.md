@@ -6,3 +6,6 @@ Needs to be three levels of complexity, use the operators + - % and *, and track
 Needs to log both user input and console output to a txt file.
 
 Initial concept, one class for generating equations, one for evaluating, and a driver class.
+
+4/22 Updated readability, variable naming and slightly altered some minor function calls.
+Program works as expected, is almost ready for submission.
