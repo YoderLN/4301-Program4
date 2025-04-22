@@ -1,3 +1,19 @@
+//********************************************************************
+//
+//  Author:        Levi Yoder
+//
+//  Program #:     Four
+//
+//  File Name:     EquationEvaluator.java
+//
+//  Course:        COSC 4301 Modern Programming
+//
+//  Instructor:    Prof. Fred Kumi 
+//
+//  Description:   Class evaluates numerical value of supported string
+//
+//********************************************************************
+
 import java.util.Stack;
 import java.util.Arrays;
 import java.util.List;
@@ -26,59 +42,80 @@ public class EquationEvaluator {
 	
 	catch (IllegalArgumentException e)
 	{
-		System.err.println(e.toString());
+		System.out.println(e.toString());
 	}
 	}
-	
-	public String getEquation()
-	{
-		return this.equation;
-	}
-	
-	public int getResult()
+		
+	public int getResult() //simple getter, no need for further commentary
 	{
 		return this.result;
 	}
 	
+	
+	   //***************************************************************
+	   //
+	   //  Method:       evaluate
+	   // 
+	   //  Description:  iterates through equation, pushing and popping
+	   //                operands and operators off of relevant stacks
+	   //
+	   //  Parameters:   None
+	   //
+	   //  Returns:      N/A 
+	   //
+	   //**************************************************************
 	public void evaluate()
 	{
 		int i = 0;
         while (i < this.equation.length()) {
             char ch = this.equation.charAt(i);
 
-            if (Character.isDigit(ch)) {
-                // Convert char digit (e.g., '3') to int (3)
-                //int num = ch - '0';
-            	
-            	int num = Character.getNumericValue(ch);
-                
-            	
+            if (Character.isDigit(ch)) 
+            {
+            	int num = Character.getNumericValue(ch);//prefer this way        	
                 numbers.push(num);
                 i++;
-            } else if (allowedOperators.contains(ch)) 
+            } 
+            else if (allowedOperators.contains(ch)) 
             {
                 while (!operators.isEmpty() && operatorPrecedence(operators.peek()) >= 
                 		operatorPrecedence(ch)) 
                 {
-                    processOperator(numbers, operators.pop());
+                    processOperator(operators.pop());
                 }
                 operators.push(ch);
                 i++;
-            } else 
+            } 
+            else //present to allow equation to have spaces for readability
             {
-                //present to allow equation to have spaces for readability
+                
                 i++;
             }
         }
 
-        while (!operators.isEmpty()) {
-            processOperator(numbers, operators.pop());
+        while (!operators.isEmpty()) 
+        {
+            processOperator(operators.pop());
         }
 
         this.result = numbers.pop();
 	}
 	
-	   private  void processOperator(Stack<Integer> numbers, char operator) {
+	
+	   //***************************************************************
+	   //
+	   //  Method:       processOperator
+	   // 
+	   //  Description:  pops the top two results off of number stack
+	   //                then pushes result of passed operation applied
+	   //                to the popped values back to the stack
+	   //
+	   //  Parameters:   char representation of a supported operator
+	   //
+	   //  Returns:      N/A 
+	   //
+	   //**************************************************************
+	   private  void processOperator(char operator) {
 	        int b = numbers.pop();
 	        int a = numbers.pop();
 	        switch (operator) {
@@ -92,23 +129,30 @@ public class EquationEvaluator {
 	            				break;
 	        }
 	    }
-	   
-	   
-	   private  int operatorPrecedence(char op) 
+	   //***************************************************************
+	   //
+	   //  Method:       operatorPrecedence
+	   // 
+	   //  Description:  iterates through equation, pushing and popping
+	   //                operands and operators off of relevant stacks
+	   //
+	   //  Parameters:   char representation of operator
+	   //
+	   //  Returns:      int representation of operator precedence
+	   //
+	   //**************************************************************
+	   private  int operatorPrecedence(char operator) 
 	   {
 		   int result = 0;
-	        switch (op) {
+	        switch (operator) {
 	            case '+':
-	            case '-': result = 1; break;
+	            case '-': result = 1; 
+	            			break;
 	            case '*':
-	            case '%': result =  2; break;
+	            case '%': result =  2; 
+	            			break;
 	            default: result =  0;
 	        }
 	        return result;
 	   }
-	@Override
-	public String toString()
-	{
-		return "haha";
-	}
 }
