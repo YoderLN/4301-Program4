@@ -58,7 +58,7 @@ public class EquationEvaluator {
 	   // 
 	   //  Description:  iterates through equation, pushing and popping
 	   //                operands and operators off of relevant stacks
-	   //
+	   //                final value in numbers stack is result of evaluation
 	   //  Parameters:   None
 	   //
 	   //  Returns:      N/A 
@@ -67,23 +67,24 @@ public class EquationEvaluator {
 	public void evaluate()
 	{
 		int i = 0;
-        while (i < this.equation.length()) {
-            char ch = this.equation.charAt(i);
+        while (i < this.equation.length()) 
+        {
+            char current = this.equation.charAt(i);
 
-            if (Character.isDigit(ch)) 
+            if (Character.isDigit(current)) 
             {
-            	int num = Character.getNumericValue(ch);//prefer this way        	
+            	int num = Character.getNumericValue(current);        	
                 numbers.push(num);
                 i++;
             } 
-            else if (allowedOperators.contains(ch)) 
+            else if (allowedOperators.contains(current)) 
             {
                 while (!operators.isEmpty() && operatorPrecedence(operators.peek()) >= 
-                		operatorPrecedence(ch)) 
+                		operatorPrecedence(current)) 
                 {
                     processOperator(operators.pop());
                 }
-                operators.push(ch);
+                operators.push(current);
                 i++;
             } 
             else //present to allow equation to have spaces for readability

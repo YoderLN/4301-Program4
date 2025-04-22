@@ -71,8 +71,6 @@ public class Program4 {
 		System.out.println(message);
 		output.format("%s%n", message);
 		}
-	
-	
 	   //***************************************************************
 	   //
 	   //  Method:       displayAverages
@@ -113,7 +111,6 @@ public class Program4 {
 		{
 			output.format("%s%n", message);
 		}
-	
 	   //***************************************************************
 	   //
 	   //  Method:       openOutputFile
@@ -136,8 +133,7 @@ public class Program4 {
 	   	        System.err.println("Issue with creating output file.");
 	   	        System.err.println(e.toString());
 	   	   }	   
-	   } 
-	   
+	   } 	   
 	   //***************************************************************
 	   //
 	   //  Method:       closeOutputFile
@@ -153,7 +149,6 @@ public class Program4 {
 	   {
 		   output.close();
 	   }
-	   
 	   //***************************************************************
 	   //
 	   //  Method:       outputHeader
@@ -169,8 +164,6 @@ public class Program4 {
 	   {
 		   toLog("Log File for Program 4");
 	   }
-	   
-	   
 	   //***************************************************************
 	   //
 	   //  Method:       isValidFormat
@@ -190,38 +183,29 @@ public class Program4 {
 		 //easiest way to handle is assume true, then flip to false if issue found
 		   boolean result = true; 
 		   
+		   char firstCh = answer.charAt(0);
 		   
 		   //early exit check
 		   if (answer.length() < 1 //empty string
 				   || answer.length() > 6 //string too long
-				   || (answer.length() == 1 && answer.charAt(0) == '-') //string only a minus
-				   || (answer.length() > 1 && (!Character.isDigit(answer.charAt(0)) && answer.charAt(0) != '-'))
+				   || (answer.length() == 1 && firstCh == '-') //string only a minus
+				   || (answer.length() > 1 && (!Character.isDigit(firstCh) && firstCh != '-'))
 				   ) //string length more than 1 and first digit not minus or number
 		   {
 			   result = false;
-		   }
-		   
+		   }	   
 		   //Initial check passed, moves to here
 		   else
-		   
-		  //second layer of validation, first character is '-' or a digit
-		   //char firstCharacter = answer.charAt(0);
-		   //if (Character.isDigit(firstCharacter) 
-			//	   || firstCharacter == '-')
 		   {
-			   for(int i = 1; i < answer.length(); i++) //every character after first is a digit
+			   for(int i = 1; i < answer.length(); i++) 
 			   {
-				   char ch = answer.charAt(i);
-				   if (!Character.isDigit(ch))
+				   char current = answer.charAt(i);
+				   if (!Character.isDigit(current))//validates every character after first is digit
 				   {
 					   result = false;
 				   }
 			   }
-		   }
-		   
-		  // else //else for second if statement, first character is not digit or '-'
-			//   result = false;
-		   
+		   }		   		   
 		   return result;
 	   }
 	   //***************************************************************
@@ -298,86 +282,84 @@ public class Program4 {
 		   double averageScore = 0;
 		   int totalGuesses = 0;
 		   String choice = "";
-		   String answer = "-9999"; //initial value outside bounds of possible entries
+		   //String answer = "-9999"; //initial value outside bounds of possible entries
 		   int correctFirst = 0;
-		   
+		 //keeps user in loop of generate, evaluate, answer until accepted exit statement is given
 		   while (!exitStatements.contains(choice))
 		   {
-		      
-		   int attemptsAtQuestion = 0;
-		   EquationGenerator myEquation = new EquationGenerator(size);
-		   String generatedEquation = myEquation.getEquation();
+			   String answer = "-9999"; //initial value outside bounds of possible entries   
+			   int attemptsAtQuestion = 0; //resets to 0 with every new question
+			   EquationGenerator myEquation = new EquationGenerator(size);
+			   myEquation.populateEquation();
+			   String generatedEquation = myEquation.getEquation();
 		   
-		   while (generatedEquation.contains("% 0"))//prevents potential arithmetic exception due to divide by 0
-		   {
-			   myEquation = new EquationGenerator(size);
-			   generatedEquation = myEquation.getEquation();
-		   }
-		   
-		   EquationEvaluator equationEvaluator = new EquationEvaluator(generatedEquation);
-		   equationEvaluator.evaluate();
-		   int result = equationEvaluator.getResult();
-		  
-		   toConsoleAndLog(generatedEquation + " = ?");
-		   while (Integer.valueOf(answer) != result)
-		   {
-			   answer = input.nextLine().trim();
-			   toLog(answer);
-			   attemptsAtQuestion++;
-			   totalGuesses++;
-			   
-			   
-			   while (!isValidFormat(answer)) //validation prevents possible conversion exception
+			   while (generatedEquation.contains("% 0"))//prevents potential arithmetic exception due to divide by 0
 			   {
-				   toConsoleAndLog("Invalid answer format, try again");
-				   toConsoleAndLog(generatedEquation + " = ?");
+				   myEquation = new EquationGenerator(size);
+				   myEquation.populateEquation();
+				   generatedEquation = myEquation.getEquation();
+			   }
+		   
+			   EquationEvaluator equationEvaluator = new EquationEvaluator(generatedEquation);
+			   equationEvaluator.evaluate();
+			   int result = equationEvaluator.getResult();
+		  
+			   toConsoleAndLog(generatedEquation + " = ?");
+			   while (Integer.valueOf(answer) != result)//loop continues until correct answer given
+			   {
 				   answer = input.nextLine().trim();
 				   toLog(answer);
 				   attemptsAtQuestion++;
 				   totalGuesses++;
-			   }
+			   	   
+				   while (!isValidFormat(answer)) //validation prevents possible conversion exception
+				   {
+					   toConsoleAndLog("Invalid answer format, try again");
+					   toConsoleAndLog(generatedEquation + " = ?");
+					   answer = input.nextLine().trim();
+					   toLog(answer);
+					   attemptsAtQuestion++;
+					   totalGuesses++;
+				   }
 			   
-			   if ( Integer.valueOf(answer) == result && attemptsAtQuestion == 1)
-			   {
-				   correctFirst++; 
-				
-				   toConsoleAndLog(correctAnswer[randomResponse.nextInt(5)]);
-			   }
+				   if ( Integer.valueOf(answer) == result && attemptsAtQuestion == 1)
+				   {
+					   correctFirst++; 	
+					   toConsoleAndLog(correctAnswer[randomResponse.nextInt(5)]);
+				   }
 			   
-			   else if ( Integer.valueOf(answer) == result)
-			   {
-				   toConsoleAndLog(correctAnswer[randomResponse.nextInt(5)]);
-				   
-			   }
-			   else
-			   {
-				   toConsoleAndLog(wrongAnswer[randomResponse.nextInt(5)]);
-				   toConsoleAndLog(generatedEquation + " = ?");
-			   }
-		   }
+				   else if ( Integer.valueOf(answer) == result)
+				   {
+				  	toConsoleAndLog(correctAnswer[randomResponse.nextInt(5)]);	   
+				   }
+				   else
+				   {
+					   toConsoleAndLog(wrongAnswer[randomResponse.nextInt(5)]);
+					   toConsoleAndLog(generatedEquation + " = ?");
+				   }
+			   }//loop exits here when input matches result
 		   
-		   answer = "-9999"; //resets to avoid false positive if back to back questions have same answer
-		   
-		   
-		   //conditionals to allow exit of level loop
-		   if (correctFirst >= 5 && size < MAX_LEVEL_SIZE)
-		   {
-			   toConsoleAndLog("\nEnter 'next' to move onto the next difficulty level");
-			   toConsoleAndLog("Enter 'exit' to terminate the program");
-			   toConsoleAndLog("Any other input will continue at current difficulty.");
-			   choice = input.nextLine();
-			   toLog(choice);
-		   }
-		   else if(correctFirst >= 5)
-		   {
-			   toConsoleAndLog("\nEnter 'exit' to terminate program.");
-			   toConsoleAndLog("Any other input will continue at current difficulty.");
-			   choice = input.nextLine();
-			   toLog(choice);
-		   }
+		   //answer = "-9999"; //resets to avoid false positive if back to back questions have same answer
+		   	   
+		   //conditionals to allow exit of function primary loop
+		   		if (correctFirst >= 5 && size < MAX_LEVEL_SIZE)
+		   		{
+		   			toConsoleAndLog("\nEnter 'next' to move onto the next difficulty level");
+		   			toConsoleAndLog("Enter 'exit' to terminate the program");
+		   			toConsoleAndLog("Any other input will continue at current difficulty.");
+		   			choice = input.nextLine();
+		   			toLog(choice);
+		   		}
+		   		else if(correctFirst >= 5)
+		   		{
+		   			toConsoleAndLog("\nEnter 'exit' to terminate program.");
+		   			toConsoleAndLog("Any other input will continue at current difficulty.");
+		   			choice = input.nextLine();
+		   			toLog(choice);
+		   		}
 		   
 		   }
-		   //should not be possible, but just in case
+		   //should not be possible, but prevents possible divide by 0 exception
 		   if (totalGuesses != 0) 
 		   {
 		   averageScore = (double)correctFirst / totalGuesses * 100;
@@ -385,10 +367,9 @@ public class Program4 {
 		   levelScores.add(averageScore); //adds averageScore to global ArrayList of scores
 		   return choice;
 	   }
-	   
 	    //***************************************************************
 	    //
-	    //  Method:       developerInfo (Non Static)
+	    //  Method:       developerInfo
 	    // 
 	    //  Description:  The developer information method of the program
 	    //

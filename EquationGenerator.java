@@ -48,7 +48,6 @@ public class EquationGenerator {
 		
 		
 		this.equationSize = equationSize;
-		populateEquation();  
 		}
 		catch (IllegalArgumentException e)
 		{
